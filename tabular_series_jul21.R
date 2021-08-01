@@ -147,7 +147,7 @@ rec %>%
 # set metric
 mset <- metric_set(rmse)
 
-# creat model specs
+# create model specs
 xgb_spec <- 
   parsnip::boost_tree(
     trees = 1000,
@@ -165,12 +165,6 @@ xgb_spec <-
 xgb_wf <- workflow() %>%
   add_recipe(rec) %>%
   add_model(xgb_spec)
-
-
-xgb_grid
-
-# parameters for bayesian tuning
-xgb_set <- dials::parameters(xgb_spec)
 
 
 # create parallel processing
