@@ -22,6 +22,7 @@ rec <- recipe(loss ~ ., data = train_raw) %>%
 xgb_spec <- boost_tree(
   mode = "regression",
   mtry = tune(),
+  tree_depth = tune(),
   trees = tune(),
   learn_rate = tune()
 ) %>%
