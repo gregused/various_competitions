@@ -97,13 +97,6 @@ xgb_best %>%
   theme_minimal()
 
 
-# save predictions to file
-xgb_best %>%
-  augment(test_raw) %>%
-  select(id, loss = .pred) %>%
-  write_csv("sub_aug_final.csv")
-
-
 # Fit last model ----------------------------------------------------------
 
 
