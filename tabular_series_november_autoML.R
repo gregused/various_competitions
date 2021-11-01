@@ -33,7 +33,7 @@ baked_df <- my_rec %>%
   bake(train_df)
 
 # convert to h2o 
-h2o.init()
+h2o.init(nthreads = 4)
 
 train_h2o_tbl <- as.h2o(baked_df)
 
@@ -49,7 +49,7 @@ auto_mod <- h2o.automl(
   project_name = "kaggle_november_series",
   max_runtime_secs = 3600,
   seed = 0212
-)
+  )
 
 
 auto_mod@leaderboard
