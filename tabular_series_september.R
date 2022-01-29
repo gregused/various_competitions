@@ -1,17 +1,26 @@
 library(tidyverse)
-library(tidymodels)
+library(parsnip)
 library(here)
-library(doParallel)
-library(parallel)
+library(rsample)
+library(yardstick)
+library(recipes)
+library(workflows)
+library(dials)
+library(tune)
+library(janitor)
+library(remotes)
 library(finetune)
+library(parallel)
+library(doParallel)
 
-
+# for catboost/lightgbm for parsnip
+#remotes::install_github("curso-r/treesnip", dependencies = FALSE) 
+library(treesnip)
 # baseline Xgboost --------------------------------------------------------
 
 
 train_raw <- read_csv(here("tabular-playground-series-sep-2021/train.csv"))
 train_raw
-
 
 test_raw <- read_csv(here("tabular-playground-series-sep-2021/test.csv"))
   

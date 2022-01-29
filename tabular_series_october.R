@@ -21,12 +21,16 @@ train_df <- train_raw %>%
   mutate(target = factor(target)) %>%
   select(-id)
 
+ 
+rm(train_raw)
+gc()
+
 glimpse(train_df)
 
 # viz first 60 numeric variables and their distributions
 train_df %>%
   select(where(is.numeric)) %>%
-  select(1:60) %>%
+  select(1:20) %>%
   pivot_longer(everything()) %>%
   ggplot(aes(value)) +
   geom_histogram(bins = 40) +
@@ -41,11 +45,10 @@ rec <- recipe(target ~ ., data = train_df)
 
 # set model parameters
 xgb_specs <- boost_tree(mode = "classification",
-                        trees = 10100,
-                        sample_size = .65,
-                        tree_depth = 6,
-                        learn_rate = 0.01,
-                        mtry = 10) %>%
+                        trees = tune(),
+                        mtry = tune(),
+                        tree_depth = tune(),
+                        learn_rate = tune()) %>% # try 3 digits.
   set_engine("xgboost")
 
 
@@ -69,10 +72,10 @@ folds <- train_df %>%
 tic()
 xgb_tuned <- xgb_wf %>%
   tune_grid(folds, 
-            grid = crossing(trees = c(10000, 15000),
-                            tree_depth = c(9, 18),
-                            learn_rate = c(0.01, 0.04),
-                            mtry = c(12, 19)),
+            grid = crossing(trees = seq(800, 2000, 200),
+                            tree_depth = c(9, 10, 18),
+                            learn_rate = c(0.01, 0.02, 03),
+                            mtry = c(8, 12, 19)),
             metrics = metric_set(roc_auc),
             control = control_grid(verbose = FALSE))
 toc()
@@ -81,14 +84,14 @@ stopCluster(cl)
 
 
 
-# fit the model about 5:42 hours
+# fit the model about 5:42 hours - 
 tic()
 xgb_fit <- xgb_wf %>% 
   fit(train_df)
 toc()
 
-# remove to free memory space
-rm(train_raw, train_df)
+
+rm(train_df)
 gc()
 
 # feature importance  ((this tells me i can mb drop variables?????))
